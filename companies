@@ -27,4 +27,15 @@ small.try.list <- try.result
 
 # check every element of list has length 6 
 small.list.length <- lapply(try.result, length) 
-missinginfo.index <- which(small.list.length <= 5) 
+missinginfo.index <- which(small.list.length <= 5) # integer(0) 
+
+# work with full dataset 
+result <- lapply(company.list, insert.empty)
+copy.result <- result
+person.name <- sapply(copy.result,function(x) x[5])
+person.company <- sapply(copy.result, function(x) x[2])
+start.date <- sapply(copy.result, function(x) x[3])
+end.date <- sapply(copy.result, function(x) x[4])
+
+workhistory.df <- as.data.frame(person.name, person.company)
+colnames(workhistory.df)<-c("LinkedIn_URL","Name")
