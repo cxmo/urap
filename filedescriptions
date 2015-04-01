@@ -5,4 +5,9 @@
 #GitHub account for shared access 
 
 # all.json: JSON file with all June 2013 Github data 
-# 
+# all.json.bak: Cleaned, easier version of all.json 
+# all.json.bak2: Uncleaned data 
+# all.json.bak3: Uncleaned data, same wc -l as all.json.bak2, appears to be the same content 
+
+# bata.RData: 
+
