@@ -4,11 +4,27 @@ source("forloop.R")
 
 # find out which ones don't have end dates 
 list.length <- lapply(company.list, length) 
-five.length <- which(length.list == 5) 
+five.length.index <- which(list.length == 5) 
 
 # making sure there isn't other missing information 
-missinginfo.index <- which(length.list <= 4) # integer(0) 
+othermissinginfo.index <- which(list.length <= 4) # integer(0) 
 
 # adding empty strings in place of missing end dates 
 try.list <- company.list # copy of company.list to work with 
 
+# trying with a smaller list 
+small.try.list <- try.list[1:100] 
+
+# writing a function for lapply 
+insert.empty <- function(x){
+                 if(length(x) == 5){
+                 append(x, c(""), after = 3)
+                  }else{x}
+                } 
+try.result <- lapply(small.list, insert.empty)
+
+small.try.list <- try.result
+
+# check every element of list has length 6 
+small.list.length <- lapply(try.result, length) 
+missinginfo.index <- which(small.list.length <= 5) 
