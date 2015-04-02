@@ -1,1 +1,27 @@
+education <- lapply(subset.df, function(x) x$education) 
+names <- lapply(subset.df, function(x) x$name)
 
+names.vector <- c()
+education <- c()
+education.list <- lapply(subset.df, function(x) x$education)
+
+k = 0
+
+for (i in 1:length(subset.df)) {
+    local.name <- subset.df[[i]]$name
+    local.education <- subset.df[[i]]$education
+    number.education <- length(local.education)
+    local.name.vector <- rep(local.name, times = number.education)
+    names.vector <- c(names.vector, local.name.vector)
+    education.vector <- local.education
+    education.df[i, 2] <- local.education
+}
+
+
+
+
+info.education <- function(x) { 
+    local.name <- x$name
+    education <- x$education
+    return(c(local.name, education))
+}
