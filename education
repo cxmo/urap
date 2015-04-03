@@ -57,8 +57,15 @@ description <- education.df$Description
 # assign vector with same length as description
 value <- rep(0, times = length(description))
 
+# find which ones don't have descriptions and assign values of NA 
+no.description.index <- which(description == "")
+value[no.description.index] <- NA 
+
+# percentage without descriptions 
+sum(is.na(value))/length(description)*100 # approximately 65.07202% 
+
 # thinking of different patterns for Bachelor's Degrees
-bachelor.pattern <- c("Bachelor*", "B.A", "BA", "B.S", "BS*", "BE", "B.Tech")
-bachelor.index <- grep(pattern = "Bachelor's", x = description) 
+bachelor.pattern <- c("Bachelor*", "B\\.A*", "BA", "B\\.S", "BS*", "BE", "B\\.Tech")
+bachelor.index <- grep(paste(bachelor.pattern,collapse="|"), description , ignore.case = T)
 value[bachelor.index] = 1
 
