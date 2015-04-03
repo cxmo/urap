@@ -25,11 +25,40 @@ education.description <- education[which(names(education) == "description")]
 education.period <- education[which(names(education) == "period")]
 
 education.df <- data.frame(names.vector, education.name, education.description, education.period, stringsAsFactors = F)
+colnames(education.df)<-c("Name", "Institute", "Description", "Period")
+
+### APPLY TO WHOLE DATASET ###
+
+education <- lapply(data, function(x) x$education) 
+education <- unlist(education)
 
 
+names.vector <- c()
 
-info.education <- function(x) { 
-    local.name <- x$name
-    education <- x$education
-    return(c(local.name, education))
+
+for (i in 1:length(data)) {
+    local.name <- data[[i]]$name
+    local.education <- data[[i]]$education
+    number.education <- length(local.education)
+    local.name.vector <- rep(local.name, times = number.education)
+    names.vector <- c(names.vector, local.name.vector)
 }
+
+education.name <- education[which(names(education) == "name")]
+education.description <- education[which(names(education) == "description")]
+education.period <- education[which(names(education) == "period")]
+
+education.df <- data.frame(names.vector, education.name, education.description, education.period, stringsAsFactors = F)
+colnames(education.df)<-c("Name", "Institute", "Description", "Period")
+
+# working with descriptions 
+description <- education.df$Description
+
+# assign vector with same length as description
+value <- rep(0, times = length(description))
+
+# thinking of different patterns for Bachelor's Degrees
+bachelor.pattern <- c("Bachelor*", "B.A", "BA", "B.S", "BS*", "BE", "B.Tech")
+bachelor.index <- grep(pattern = "Bachelor's", x = description) 
+value[bachelor.index] = 1
+
