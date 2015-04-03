@@ -1,32 +1,5 @@
 load("data.RData")
 
-# try a small subset of the data
-subset.df <- data[1:20]
-
-# get only name of the person and education of the person
-
-education <- lapply(subset.df, function(x) x$education) 
-education <- unlist(education)
-
-
-names.vector <- c()
-
-
-for (i in 1:length(subset.df)) {
-    local.name <- subset.df[[i]]$name
-    local.education <- subset.df[[i]]$education
-    number.education <- length(local.education)
-    local.name.vector <- rep(local.name, times = number.education)
-    names.vector <- c(names.vector, local.name.vector)
-}
-
-education.name <- education[which(names(education) == "name")]
-education.description <- education[which(names(education) == "description")]
-education.period <- education[which(names(education) == "period")]
-
-education.df <- data.frame(names.vector, education.name, education.description, education.period, stringsAsFactors = F)
-colnames(education.df)<-c("Name", "Institute", "Description", "Period")
-
 ### APPLY TO WHOLE DATASET ###
 
 education <- lapply(data, function(x) x$education) 
@@ -51,7 +24,7 @@ education.period <- education[which(names(education) == "period")]
 education.df <- data.frame(names.vector, education.name, education.description, education.period, stringsAsFactors = F)
 colnames(education.df)<-c("Name", "Institute", "Description", "Period")
 
-# working with descriptions 
+# working with only descriptions 
 description <- education.df$Description
 
 # assign vector with same length as description
@@ -64,8 +37,20 @@ value[no.description.index] <- NA
 # percentage without descriptions 
 sum(is.na(value))/length(description)*100 # approximately 65.07202% 
 
-# thinking of different patterns for Bachelor's Degrees
-bachelor.pattern <- c("Bachelor*", "B\\.A*", "BA", "B\\.S", "BS*", "BE", "B\\.Tech")
+# different patterns fro High School Diploma 
+highschool.pattern <- c("high school")
+highschool.index <- grep(highschool.pattern, description , ignore.case = T)
+value[highschool.index] = 0
+
+# different patterns for Bachelor's Degrees
+bachelor.pattern <- c("Bachelor*", "B\\.A", "BA", "B\\.S", "BS", "BE", "B\\.Tech")
 bachelor.index <- grep(paste(bachelor.pattern,collapse="|"), description , ignore.case = T)
 value[bachelor.index] = 1
+
+# different patterns for Master's Degrees 
+master.pattern <- c("Master", "MS$", "MBA")
+master.index <- grep(paste(master.pattern,collapse="|"), description , ignore.case = T)
+value[master.index] = 2
+
+
 
