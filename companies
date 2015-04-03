@@ -4,10 +4,13 @@ source("forloop.R")
 
 # find out which ones don't have end dates 
 list.length <- lapply(company.list, length) 
-five.length.index <- which(list.length == 5) 
+six.length.index <- which(list.length == 6) 
+
+# percentage without enddates
+length(six.length.index)/length(list.length) # 10.68359%
 
 # making sure there isn't other missing information 
-othermissinginfo.index <- which(list.length <= 4) # integer(0) 
+othermissinginfo.index <- which(list.length <= 5) # integer(0) 
 
 # adding empty strings in place of missing end dates 
 try.list <- company.list # copy of company.list to work with 
@@ -17,7 +20,7 @@ small.try.list <- try.list[1:100]
 
 # writing a function for lapply 
 insert.empty <- function(x){
-                 if(length(x) == 5){
+                 if(length(x) == 6){
                  append(x, c(""), after = 3)
                   }else{x}
                 } 
@@ -25,17 +28,21 @@ try.result <- lapply(small.list, insert.empty)
 
 small.try.list <- try.result
 
-# check every element of list has length 6 
+# check every element of list has length 7 
 small.list.length <- lapply(try.result, length) 
-missinginfo.index <- which(small.list.length <= 5) # integer(0) 
+missinginfo.index <- which(small.list.length <= 6) # integer(0) 
 
 # work with full dataset 
 result <- lapply(company.list, insert.empty)
 copy.result <- result
-person.name <- sapply(copy.result,function(x) x[5])
+person.name <- sapply(copy.result,function(x) x[6])
 person.company <- sapply(copy.result, function(x) x[2])
 start.date <- sapply(copy.result, function(x) x[3])
 end.date <- sapply(copy.result, function(x) x[4])
+job.title <- sapply(copy.result, function(x) x[5])
 
-workhistory.df <- data.frame(person.name, person.company, start.date, end.date, stringsAsFactors = FALSE)
-colnames(workhistory.df)<-c("Name", "Company_LinkedIn_URL", "Start_Date", "End_Date")
+workhistory.df <- data.frame(person.name, person.company, job.title, start.date, end.date, stringsAsFactors = FALSE)
+colnames(workhistory.df)<-c("Name", "Company_LinkedIn_URL", "Title", "Start_Date", "End_Date")
+
+
+
