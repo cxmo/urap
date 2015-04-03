@@ -1,11 +1,16 @@
+load("data.RData")
+
+# try a small subset of the data
+subset.df <- data[1:20]
+
+# get only name of the person and education of the person
+
 education <- lapply(subset.df, function(x) x$education) 
-names <- lapply(subset.df, function(x) x$name)
+education <- unlist(education)
+
 
 names.vector <- c()
-education <- c()
-education.list <- lapply(subset.df, function(x) x$education)
 
-k = 0
 
 for (i in 1:length(subset.df)) {
     local.name <- subset.df[[i]]$name
@@ -13,10 +18,13 @@ for (i in 1:length(subset.df)) {
     number.education <- length(local.education)
     local.name.vector <- rep(local.name, times = number.education)
     names.vector <- c(names.vector, local.name.vector)
-    education.vector <- local.education
-    education.df[i, 2] <- local.education
 }
 
+education.name <- education[which(names(education) == "name")]
+education.description <- education[which(names(education) == "description")]
+education.period <- education[which(names(education) == "period")]
+
+education.df <- data.frame(names.vector, education.name, education.description, education.period, stringsAsFactors = F)
 
 
 
