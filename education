@@ -38,19 +38,30 @@ value[no.description.index] <- NA
 sum(is.na(value))/length(description)*100 # approximately 65.07202% 
 
 # different patterns fro High School Diploma 
-highschool.pattern <- c("high school")
+highschool.pattern <- c("^high")
 highschool.index <- grep(highschool.pattern, description , ignore.case = T)
 value[highschool.index] = 0
 
 # different patterns for Bachelor's Degrees
-bachelor.pattern <- c("Bachelor*", "B\\.A", "BA", "B\\.S", "BS", "BE", "B\\.Tech")
+bachelor.pattern <- c("^Bachelor*", "^B\\.A", "BA", "^B\\.S", "^BS", "^BE", "^B\\.Tech") # this grabs MBA as well
 bachelor.index <- grep(paste(bachelor.pattern,collapse="|"), description , ignore.case = T)
 value[bachelor.index] = 1
 
 # different patterns for Master's Degrees 
-master.pattern <- c("Master", "MS$", "MBA")
+master.pattern <- c("^Master", "^MS$", "^MBA")
 master.index <- grep(paste(master.pattern,collapse="|"), description , ignore.case = T)
 value[master.index] = 2
 
+# different patterns for PHD 
+phd.pattern <- c("^doctor*", "PHD", "Ph//.d", "D//.phil", "dphil")
+phd.index <- grep(paste(phd.pattern, collapse = "|"), description, ignore.case = T)
+value[phd.index] = 3
 
+# check to see how many values grabbed 
+no.index <- length(phd.index) + length(master.index) + length(bachelor.index)+length(no.description.index)
+no.index / length(description) # 77.647%
+
+# see what hasn't been captured yet 
+captured.index <- c(no.description.index, highschool.index, bachelor.index, master.index, phd.index)
+not.captured <- description[-captured]
 
