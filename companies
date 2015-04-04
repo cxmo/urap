@@ -42,7 +42,7 @@ end.date <- sapply(copy.result, function(x) x[4])
 job.title <- sapply(copy.result, function(x) x[5])
 
 workhistory.df <- data.frame(person.name, person.company, job.title, start.date, end.date, stringsAsFactors = FALSE)
-colnames(workhistory.df)<-c("Name", "Company_LinkedIn_URL", "Title", "Start_Date", "End_Date")
+colnames(workhistory.df)<-c("Name", "URL", "Title", "Start_Date", "End_Date")
 
 
 
