@@ -52,6 +52,11 @@ master.pattern <- c("^Master", "^MS$", "^MBA")
 master.index <- grep(paste(master.pattern,collapse="|"), description , ignore.case = T)
 value[master.index] = 2
 
+#### 4/7/2015 EDIT #### 
+certificate.pattern <- c("^certificate")
+certificate.index <- grep(certificate.pattern, description, ignore.case = T)
+
+
 # different patterns for PHD 
 phd.pattern <- c("^doctor*", "PHD", "Ph//.d", "D//.phil", "dphil")
 phd.index <- grep(paste(phd.pattern, collapse = "|"), description, ignore.case = T)
@@ -63,5 +68,17 @@ no.index / length(description) # 77.647%
 
 # see what hasn't been captured yet 
 captured.index <- c(no.description.index, highschool.index, bachelor.index, master.index, phd.index)
-not.captured <- description[-captured]
+not.captured <- description[-captured.index]
+
+#### APRIL 7TH, 2015 EDIT #### 
+certificate.pattern <- c("^certificate")
+certificate.index <- grep(certificate.pattern, description, ignore.case = T)
+table(value, exclude = NULL)
+no.index <- length(phd.index) + length(master.index) + length(bachelor.index)
+            +length(no.description.index) + length(certificate.index)
+no.index/length(description) # 78.81602% 
+not.captured <- description[-c(captured.index, certificate.index)]
+
+econ.pattern <- c("^econ") 
+econ.index <- grep(econ.pattern, description, ignore.case = T) 
 
