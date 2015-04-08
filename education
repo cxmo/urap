@@ -97,41 +97,17 @@ length(all.captured)/length(description) # 0.886449
 
 
 not.captured <- description[-all.captured]
-a.start <- grep("^a", not.captured) 
-(not.captured[a.start])
-b.start <- grep("^b", not.captured)
-(not.captured[b.start])
-c.start <- grep("^c", not.captured)
-(not.captured[c.start])
-d.start <- grep("^d", not.captured)
-(not.captured[d.start])
-e.start <- grep("^e", not.captured) 
-(not.captured[e.start])
-f.start <- grep("^f", not.captured)
-(not.captured[f.start])
-g.start <- grep("^g", not.captured)
-(not.captured[g.start])
-h.start <- grep("^h", not.captured)
-(not.captured[h.start])
-i.start <- grep("^i", not.captured)
-(not.captured[i.start])
-j.start <- grep("^j", not.captured)
-(not.captured[j.start])
-j.start <- grep("^j", not.captured)
-(not.captured[j.start])
-j.start <- grep("^j", not.captured)
-(not.captured[j.start])
-j.start <- grep("^j", not.captured)
-(not.captured[j.start])
-j.start <- grep("^j", not.captured)
-(not.captured[j.start])
-j.start <- grep("^j", not.captured)
-(not.captured[j.start])
-j.start <- grep("^j", not.captured)
-(not.captured[j.start])
-j.start <- grep("^j", not.captured)
-(not.captured[j.start])j.start <- grep("^j", not.captured)
-(not.captured[j.start])
+
+# x must be a string 
+
+letter.start <- function(x){
+                    x.start <- grep(paste("^", x, sep = ""), not.captured)
+                    return(not.captured[x.start])
+                }
+                
+all.remaining <- mapply(letter.start, letters)
+
+
 table(not.captured)
 
 
