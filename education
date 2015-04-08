@@ -37,13 +37,14 @@ value[no.description.index] <- NA
 # percentage without descriptions 
 sum(is.na(value))/length(description)*100 # approximately 65.07202% 
 
-# different patterns fro High School Diploma 
-highschool.pattern <- c("^high")
-highschool.index <- grep(highschool.pattern, description , ignore.case = T)
-value[highschool.index] = 0
+# different patterns for High School Diploma 
+hs.pattern <- c("^high", "^a level", "^a-level", "a-level", "a level", "^HS ", "high school")
+hs.index <- grep(paste(hs.pattern,collapse="|"), description , ignore.case = T)
+value[hs.index, a.level] = 0
+description[hs.index][500:1000]
 
 # different patterns for Bachelor's Degrees
-bachelor.pattern <- c("^Bachelor*", "^B\\.A", "BA", "^B\\.S", "^BS", "^BE", "^B\\.Tech") # this grabs MBA as well
+bachelor.pattern <- c("^Bachelor*", "^B\\.A", "BA", "^B\\.S", "^BS", "^BE", "^B\\.Tech", "^B.E") # this grabs MBA as well
 bachelor.index <- grep(paste(bachelor.pattern,collapse="|"), description , ignore.case = T)
 value[bachelor.index] = 1
 
@@ -52,33 +53,87 @@ master.pattern <- c("^Master", "^MS$", "^MBA")
 master.index <- grep(paste(master.pattern,collapse="|"), description , ignore.case = T)
 value[master.index] = 2
 
-#### 4/7/2015 EDIT #### 
-certificate.pattern <- c("^certificate")
-certificate.index <- grep(certificate.pattern, description, ignore.case = T)
-
-
 # different patterns for PHD 
 phd.pattern <- c("^doctor*", "PHD", "Ph//.d", "D//.phil", "dphil")
 phd.index <- grep(paste(phd.pattern, collapse = "|"), description, ignore.case = T)
 value[phd.index] = 3
 
 # check to see how many values grabbed 
-no.index <- length(phd.index) + length(master.index) + length(bachelor.index)+length(no.description.index)
+no.index <- length(phd.index) + length(master.index) + length(bachelor.index)+length(no.description.index) + length(hs.index)
 no.index / length(description) # 77.647%
 
 # see what hasn't been captured yet 
-captured.index <- c(no.description.index, highschool.index, bachelor.index, master.index, phd.index)
+captured.index <- c(no.description.index, hs.index, bachelor.index, master.index, phd.index)
 not.captured <- description[-captured.index]
 
 #### APRIL 7TH, 2015 EDIT #### 
+# might get mixed up with high school? 
 certificate.pattern <- c("^certificate")
 certificate.index <- grep(certificate.pattern, description, ignore.case = T)
-table(value, exclude = NULL)
-no.index <- length(phd.index) + length(master.index) + length(bachelor.index)
-            +length(no.description.index) + length(certificate.index)
-no.index/length(description) # 78.81602% 
-not.captured <- description[-c(captured.index, certificate.index)]
 
+# associate degrees 
+associate.pattern <- c("^associate") 
+associate.index <- grep(associate.pattern, description, ignore.case = T) 
+
+### DEGREES, MAY HAVE VALUE 1, 2, 3 ###
 econ.pattern <- c("^econ") 
 econ.index <- grep(econ.pattern, description, ignore.case = T) 
+
+ee.pattern <- c("^electrical engineering", "ee")
+ee.index <- grep(paste(ee.pattern, collapse = "|"), description, ignore.case = T)
+
+# value of 2 (Master) or 3 (PhD)
+grad.pattern <- c("^grad") 
+grad.index <- grep(grad.pattern, description, ignore.case = T) 
+
+# computer, probably 1, 2, or 3 
+comp.pattern <- c("^computer") 
+comp.index <- grep(comp.pattern, description, ignore.case = T)
+
+
+all.captured <- c(phd.index, master.index, bachelor.index, hs.index, no.description.index, certificate.index, econ.index)
+all.captured <- c(all.captured, grad.index, comp.index, associate.index, ee.index)
+length(all.captured)/length(description) # 0.886449
+
+
+not.captured <- description[-all.captured]
+a.start <- grep("^a", not.captured) 
+(not.captured[a.start])
+b.start <- grep("^b", not.captured)
+(not.captured[b.start])
+c.start <- grep("^c", not.captured)
+(not.captured[c.start])
+d.start <- grep("^d", not.captured)
+(not.captured[d.start])
+e.start <- grep("^e", not.captured) 
+(not.captured[e.start])
+f.start <- grep("^f", not.captured)
+(not.captured[f.start])
+g.start <- grep("^g", not.captured)
+(not.captured[g.start])
+h.start <- grep("^h", not.captured)
+(not.captured[h.start])
+i.start <- grep("^i", not.captured)
+(not.captured[i.start])
+j.start <- grep("^j", not.captured)
+(not.captured[j.start])
+j.start <- grep("^j", not.captured)
+(not.captured[j.start])
+j.start <- grep("^j", not.captured)
+(not.captured[j.start])
+j.start <- grep("^j", not.captured)
+(not.captured[j.start])
+j.start <- grep("^j", not.captured)
+(not.captured[j.start])
+j.start <- grep("^j", not.captured)
+(not.captured[j.start])
+j.start <- grep("^j", not.captured)
+(not.captured[j.start])
+j.start <- grep("^j", not.captured)
+(not.captured[j.start])j.start <- grep("^j", not.captured)
+(not.captured[j.start])
+table(not.captured)
+
+
+
 
