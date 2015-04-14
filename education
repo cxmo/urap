@@ -1,115 +1,144 @@
-load("data.RData")
+# **********************
+# PERIOD PROCESSING
+# PARSE OUT PERIOD
+education.periods <- strsplit(education.df$Period, " â ")
+education.periods <- lapply(education.periods, function(x) str_replace_all(x, "[^0-9]", ""))
 
-### APPLY TO WHOLE DATASET ###
+education.periods.nelement <- unlist(lapply(education.periods, length))
 
-education <- lapply(data, function(x) x$education) 
-education <- unlist(education)
+# Process missing periods
+missing.element <- which(education.periods.nelement == 0)
+denote.missing <- split(vector("character", length(missing.element)*2), 1:length(missing.element))
+education.periods[missing.element] <- denote.missing
+
+# Process single periods
+single.element <- which(education.periods.nelement == 1)
+dummy.period <- lapply(education.periods, function(x) c(x, "NA"))
+education.periods[single.element] <- dummy.period[single.element]
+
+# NOW
+period.df <- data.frame(do.call(rbind, education.periods), stringsAsFactors = F)
+colnames(period.df) <- c("begin","end")
+period.df$begin <- as.numeric(period.df$begin)
+period.df$end <- as.numeric(period.df$end)
+period.df$duration <- period.df$end - period.df$begin # + 1
+
+education.df <- cbind(education.df, period.df)
+# ************************
 
 
-names.vector <- c()
-
-
-for (i in 1:length(data)) {
-    local.name <- data[[i]]$name
-    local.education <- data[[i]]$education
-    number.education <- length(local.education)
-    local.name.vector <- rep(local.name, times = number.education)
-    names.vector <- c(names.vector, local.name.vector)
-}
-
-education.name <- education[which(names(education) == "name")]
-education.description <- education[which(names(education) == "description")]
-education.period <- education[which(names(education) == "period")]
-
-education.df <- data.frame(names.vector, education.name, education.description, education.period, stringsAsFactors = F)
-colnames(education.df)<-c("Name", "Institute", "Description", "Period")
-
-# working with only descriptions 
+# **********************
+##### ASSIGNING DEGREE VALUES
+# working with only descriptions
 description <- education.df$Description
 
 # assign vector with same length as description
-value <- rep(0, times = length(description))
-
-# find which ones don't have descriptions and assign values of NA 
+value <- rep(NA, times = length(description))
+# find which ones don't have descriptions and assign values of NA
 no.description.index <- which(description == "")
-value[no.description.index] <- NA 
+value[no.description.index] <- NA
+# percentage without descriptions
+sum(is.na(value))/length(description)*100 # approximately 65.07202%
 
-# percentage without descriptions 
-sum(is.na(value))/length(description)*100 # approximately 65.07202% 
-
-# different patterns for High School Diploma 
-hs.pattern <- c("^high", "^a level", "^a-level", "a-level", "a level", "^HS ", "high school")
+# different patterns for High School Diploma
+hs.pattern <- c("^high", "^a level", "^a-level", "a-level", "a level", "^HS ", "high school", "^secondary", "highschool")
 hs.index <- grep(paste(hs.pattern,collapse="|"), description , ignore.case = T)
 value[hs.index, a.level] = 0
-description[hs.index][500:1000]
 
 # different patterns for Bachelor's Degrees
-bachelor.pattern <- c("^Bachelor*", "^B\\.A", "BA", "^B\\.S", "^BS", "^BE", "^B\\.Tech", "^B.E") # this grabs MBA as well
+bachelor.pattern <- c("^Bachelor*", "^B\\.A", "^BA", "^B\\.S", "^BS", "^BE", "^B\\.Tech", "^B.E") # this grabs MBA as well
 bachelor.index <- grep(paste(bachelor.pattern,collapse="|"), description , ignore.case = T)
-value[bachelor.index] = 1
+# value[bachelor.index] = 1
+value[bachelor.index] = 2
 
-# different patterns for Master's Degrees 
+# different patterns for Master's Degrees
 master.pattern <- c("^Master", "^MS$", "^MBA")
 master.index <- grep(paste(master.pattern,collapse="|"), description , ignore.case = T)
-value[master.index] = 2
+# value[master.index] = 2
+value[master.index] = 3
 
-# different patterns for PHD 
-phd.pattern <- c("^doctor*", "PHD", "Ph//.d", "D//.phil", "dphil")
+# different patterns for PHD
+phd.pattern <- c("^doctor*", "^PHD", "^Ph//.d", "^D//.phil", "^dphil")
 phd.index <- grep(paste(phd.pattern, collapse = "|"), description, ignore.case = T)
-value[phd.index] = 3
+# value[phd.index] = 3
+value[phd.index] = 4
 
-# check to see how many values grabbed 
+# check to see how many values grabbed
 no.index <- length(phd.index) + length(master.index) + length(bachelor.index)+length(no.description.index) + length(hs.index)
 no.index / length(description) # 77.647%
-
-# see what hasn't been captured yet 
+# see what hasn't been captured yet
 captured.index <- c(no.description.index, hs.index, bachelor.index, master.index, phd.index)
 not.captured <- description[-captured.index]
-
-#### APRIL 7TH, 2015 EDIT #### 
-# might get mixed up with high school? 
+#### APRIL 7TH, 2015 EDIT ####
+# might get mixed up with high school?
 certificate.pattern <- c("^certificate")
 certificate.index <- grep(certificate.pattern, description, ignore.case = T)
-
-# associate degrees 
-associate.pattern <- c("^associate") 
-associate.index <- grep(associate.pattern, description, ignore.case = T) 
-
-### DEGREES, MAY HAVE VALUE 1, 2, 3 ###
-econ.pattern <- c("^econ") 
-econ.index <- grep(econ.pattern, description, ignore.case = T) 
-
-ee.pattern <- c("^electrical engineering", "ee")
-ee.index <- grep(paste(ee.pattern, collapse = "|"), description, ignore.case = T)
-
+# associate degrees
+associate.pattern <- c("^associate")
+associate.index <- grep(associate.pattern, description, ignore.case = T)
+# WEI EDIT
+diploma.pattern <- c("^diploma","^dipl")
+diploma.index <- grep(paste(diploma.pattern, collapse = "|"), description, ignore.case = T)
+value[union(associate.index, diploma.index)] <- 1
 # value of 2 (Master) or 3 (PhD)
-grad.pattern <- c("^grad") 
-grad.index <- grep(grad.pattern, description, ignore.case = T) 
+grad.pattern <- c("^grad")
+grad.index <- grep(grad.pattern, description, ignore.case = T)
 
-# computer, probably 1, 2, or 3 
-comp.pattern <- c("^computer") 
-comp.index <- grep(comp.pattern, description, ignore.case = T)
-
-
-all.captured <- c(phd.index, master.index, bachelor.index, hs.index, no.description.index, certificate.index, econ.index)
+# CHECKS
+all.captured <- unique(c(phd.index, master.index, bachelor.index, hs.index, certificate.index))
 all.captured <- c(all.captured, grad.index, comp.index, associate.index, ee.index)
 length(all.captured)/length(description) # 0.886449
-
-
 not.captured <- description[-all.captured]
-
-# x must be a string 
-
+# x must be a string
 letter.start <- function(x){
-                    x.start <- grep(paste("^", x, sep = ""), not.captured)
-                    return(not.captured[x.start])
-                }
-                
+    x.start <- grep(paste("^", x, sep = ""), not.captured)
+    return(not.captured[x.start])
+}
 all.remaining <- mapply(letter.start, letters)
+# table(not.captured)
+education.df$value <- value
+
+#
+# **********************
+# DECISION RULES
+# B.A. is about 3-5 years and will be at "Universities"
+# High School is about 4 years
+# Masters is about 1-2 years
+# PhD is 4-infinity years
 
 
-table(not.captured)
+econ.pattern <- c("^econ")
+econ.index <- grep(econ.pattern, description, ignore.case = T)
+ee.pattern <- c("^electrical engineering", "^ee")
+ee.index <- grep(paste(ee.pattern, collapse = "|"), description, ignore.case = T)
 
+grad.index <- grep(grad.pattern, description, ignore.case = T)
+# computer, probably 1, 2, or 3
+comp.pattern <- c("^computer")
+comp.index <- grep(comp.pattern, description, ignore.case = T)
 
+#### April 13th-14th edit #### 
+names(education.df) <- tolower(names(education.df))
 
+# empty vector for storing results 
+institute.vector = rep(NA, times = length(education.df$institute))
 
+# working with only institutions 
+institute <- education.df$institute
+
+secondary.index <- grep(paste(hs.pattern,collapse="|"), institute , ignore.case = T)
+institute.vector[secondary.index] = 0
+
+tertiary.pattern <- c("univ", "college")
+tertiary.index <- grep(paste(tertiary.pattern, collapse = "|"), institute, ignore.case = T)
+tertiary <- institute[tertiary.index]
+institute.vector[tertiary.index] <- 1 
+
+# are there high schools named "university ___"? 
+possible.hs.pattern <- c("^a level", "^a-level", "a-level", "a level", "high school", "secondary", "highschool")
+possible.hs.index <- grep(paste(possible.hs.pattern, collapse = "|"),tertiary , ignore.case = T)
+tertiary.hs = tertiary[possible.hs.index]
+head(institute[which(institute %in% tertiary.hs)])
+institute.vector[which(institute %in% tertiary.hs)] <- 0
+
+institute[which(is.na(institute.vector))]
