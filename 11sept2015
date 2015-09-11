@@ -1,0 +1,30 @@
+system("ls")
+load("angel.data.RData")
+load("my.emp.df.RData") 
+load("datapav1.RData") 
+
+# treatment group 
+founders = angel.data[angel.data$angel.found == 1, ] 
+founders.linkedin = founders$linkedin_url
+
+# subset employment histories from my.emp.df 
+founders.history = my.emp.df[(my.emp.df$linkedin_url %in% founders.linkedin),]
+
+# control group 
+nonfounders1 = angel.data[angel.data$angel.found == 0,]
+nonfounders1.linkedin  = nonfounders1$linkedin_url 
+
+# subset employment histories from my.emp.df 
+nonfounders1.history = my.emp.df[(my.emp.df$linkedin_url %in% nonfounders1.linkedin),]
+
+# comparing the datasets 
+dim(founders.history) # 891737     13
+dim(nonfounders1.history) # 140890     13
+dim(my.emp.df) # 2881222      13
+
+# grabbing pav1 from my.emp.df 
+pav1 = my.emp.df[my.emp.df$source == "pav1",]
+
+
+
+
