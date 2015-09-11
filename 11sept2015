@@ -24,6 +24,13 @@ dim(my.emp.df) # 2881222      13
 
 # grabbing pav1 from my.emp.df 
 pav1 = my.emp.df[my.emp.df$source == "pav1",]
+pav1.linkedin = pav1$linkedin_url 
+
+# linkedin url from data.pav1 
+data.pav1.linkedin = lapply(data.pav1, function(x) return(x$linkedin_url))
+
+length(data.pav1.linkedin) # 447987 
+length(unlist(data.pav1.linkedin)) # 447985 
 
 
 
