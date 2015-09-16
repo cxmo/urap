@@ -32,6 +32,22 @@ data.pav1.linkedin = lapply(data.pav1, function(x) return(x$linkedin_url))
 length(data.pav1.linkedin) # 447987 
 length(unlist(data.pav1.linkedin)) # 447985 
 
+### Sept 16 Edit ### 
+titles = my.emp.df$title
+founders.index = grep("founders", ignore.case = T,  titles)
+titles = my.emp.df$title
+founders.titles = titles[founders.index]
+
+# subsetting my.emp.df
+my.emp.founder.df = my.emp.df[founders.index,]
+
+# data.pav1 
+my.emp.founder.df = my.emp.df[founders.index,]
+my.emp.founder.df = my.emp.df[founders.index,]
+
+data.pav1.new = unlist(data.pav1, recursive = F)
+linkedin.url = data.pav1.new[seq(1, length(data.pav1.new), 14)]
+pav = data.pav1.new[seq(13, length(data.pav1.new), 14)]
 
 
 
