@@ -49,5 +49,6 @@ data.pav1.new = unlist(data.pav1, recursive = F)
 linkedin.url = data.pav1.new[seq(1, length(data.pav1.new), 14)]
 pav = data.pav1.new[seq(13, length(data.pav1.new), 14)]
 
+times = lapply(pav, length)
 
 
