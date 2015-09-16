@@ -51,4 +51,8 @@ pav = data.pav1.new[seq(13, length(data.pav1.new), 14)]
 
 times = lapply(pav, length)
 
+length(which(names(times) != "people_also_viewed"))
+not.pav = which(names(times) != "people_also_viewed") # starts at index 372295
+not.linkedin = which(names(linkedin.url) != "linkedin_url") # starts at index 372296 
+
 
