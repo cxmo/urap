@@ -55,4 +55,18 @@ length(which(names(times) != "people_also_viewed"))
 not.pav = which(names(times) != "people_also_viewed") # starts at index 372295
 not.linkedin = which(names(linkedin.url) != "linkedin_url") # starts at index 372296 
 
+### Sept 18 Edit ### 
+pav1 = lapply(data.pav1, function(x) return(x$people_also_viewed))
+length(pav1) == length(data.pav1)
+# [1] TRUE
+pav1.islist = lapply(pav1, is.list)
+sum(unlist(pav1.islist)) 
+list.index = which(unlist(pav1.islist))
+pav1[list.index]
+
+pav1.removelist = lapply(pav1, fuction(x) if(is.list(x)){return(0)} else{return(x)})
+pav1.removelist[list.index] # check to see if lists are removed 
+
+pav1.linkedin = lapply(data.pav1, function(x) return(x$linkedin_url))
+
 
