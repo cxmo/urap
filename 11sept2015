@@ -56,6 +56,7 @@ not.pav = which(names(times) != "people_also_viewed") # starts at index 372295
 not.linkedin = which(names(linkedin.url) != "linkedin_url") # starts at index 372296 
 
 ### Sept 18 Edit ### 
+# for data.pav1 # 
 pav1 = lapply(data.pav1, function(x) return(x$people_also_viewed))
 length(pav1) == length(data.pav1)
 # [1] TRUE
@@ -63,10 +64,30 @@ pav1.islist = lapply(pav1, is.list)
 sum(unlist(pav1.islist)) 
 list.index = which(unlist(pav1.islist))
 pav1[list.index]
-
-pav1.removelist = lapply(pav1, fuction(x) if(is.list(x)){return(0)} else{return(x)})
+pav1.removelist = lapply(pav1, function(x) if(is.list(x)){return(NULL)} else{return(x)})
 pav1.removelist[list.index] # check to see if lists are removed 
 
 pav1.linkedin = lapply(data.pav1, function(x) return(x$linkedin_url))
+pav1.removelist.length = lapply(pav1.removelist, length)
+times = unlist(pav1.removelist.length)
+linkedin.vector = unlist(pav1.linkedin)
 
+# times and linkedin.vector are different lengths 
+linkedin.isnull = lapply(pav1.linkedin, is.null)
+which(linkedin.isnull == T) # 372296 372297 
+
+# remove from pav1.linkedin and pav1.removelist.length 
+pav1.linkedin.clean = pav1.linkedin[-c(372296, 372297)]
+pav1.removelist.length.clean = pav1.removelist.length[-c(372296, 372297)]
+
+# rep pav1.linkedin.clean by length of pav1.removelist.length.clean 
+times = unlist(pav1.removelist.length.clean) 
+length(times) # 447985
+linkedin.vector = unlist(pav1.linkedin.clean)
+length(linkedin.vector) # 447985
+linkedin.rep = rep(linkedin.vector, times) 
+
+results = mapply(rep, linkedin.vector, times)
+
+# for data.seed # 
 
