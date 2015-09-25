@@ -1,0 +1,63 @@
+system("ls")
+load("angel.data.RData")
+load("my.emp.df.RData") 
+load("datapav1.RData") 
+
+# treatment group 
+founders = angel.data[angel.data$angel.found == 1, ] 
+founders.linkedin = founders$linkedin_url
+
+# subset employment histories from my.emp.df 
+founders.history = my.emp.df[(my.emp.df$linkedin_url %in% founders.linkedin),]
+
+# control group 
+nonfounders1 = angel.data[angel.data$angel.found == 0,]
+nonfounders1.linkedin  = nonfounders1$linkedin_url 
+
+# subset employment histories from my.emp.df 
+nonfounders1.history = my.emp.df[(my.emp.df$linkedin_url %in% nonfounders1.linkedin),]
+
+# comparing the datasets 
+dim(founders.history) # 891737     13
+dim(nonfounders1.history) # 140890     13
+dim(my.emp.df) # 2881222      13
+
+# grabbing pav1 from my.emp.df 
+pav1 = my.emp.df[my.emp.df$source == "pav1",]
+pav1.linkedin = pav1$linkedin_url 
+
+
+### Sept 16 Edit ### 
+titles = my.emp.df$title
+founders.index = grep("founders", ignore.case = T,  titles)
+founders.titles = titles[founders.index]
+
+# subsetting my.emp.df
+my.emp.founder.df = my.emp.df[founders.index,]
+
+### Sept 18 Edit ### 
+# for data.pav1 # 
+pav1 = lapply(data.pav1, function(x) return(x$people_also_viewed))
+list.index = which(lapply(pav1, is.list) == T) 
+pav1.new = lapply(pav1, unlist)
+which(lapply(pav1.new, is.list) = T) # integer(0) 
+
+pav1.new.length = lapply(pav1.new, length) 
+which(pav1.new.length == 0) 
+
+### Sept 25 Edit ### 
+# linkedin url from data.pav1 
+data.pav1.linkedin = lapply(data.pav1, function(x) return(x$linkedin_url)) 
+
+which(lapply(data.pav1.linkedin, is.null) == T)
+# 372296 372297 
+
+data.pav1.linkedin = data.pav1.linkedin[-c(372296, 372297)]
+pav1.new = pav1.new[-c(372296, 372297)] 
+
+pav1.new.length = lapply(pav1.new, length) 
+times = rep(unlist(data.pav1.linkedin), pav1.new.length)
+pav1.new.unlist = unlist(pav1.new)
+pav1.new.df = data.frame(times, pav1.new.unlist, stringsAsFactors = F) 
+
+
