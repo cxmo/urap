@@ -1,0 +1,10 @@
+load("my.emp.df.RData")
+names(my.emp.df) 
+
+# consultants as titles # 
+title= my.emp.df$title
+consult = grep("consult", title) 
+consult.df = my.emp.df[consult,] 
+company = table(consult.df$company) 
+company.sorted = sort(company, decreasing = T) 
+
