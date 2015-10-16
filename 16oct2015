@@ -9,3 +9,39 @@ company.tb = table(company)[order(table(company), decreasing = T)]
 # accenture, bain, deloitte, boston consulting, allen booz hamilton, 
 # earnst young, mckinsey, pwc, capgemini, kpmg, oliver wyman, anderson arthur 
 # consultancy services tata, bearingpoint, associates zs
+
+find.company = function(company.string, data = company){ 
+  company.name = grep(company.string, data) 
+  company.name.df = consult.df[company.name,]
+  return(company.name.df)
+} 
+
+accenture = find.company("accenture") 
+bain = find.company("bain") 
+deloitte = find.company("deloitte") 
+boston.consulting = find.company("boston.consulting") 
+booz = find.company("booz") 
+ey = find.company("earnst young | ey") 
+mckinsey = find.company("mckinsey") 
+pwc = find.company("pwc | price") 
+capgemini = find.company("capgemini") 
+kpmg = find.company("kpmg")
+oliver.wyman = find.company("wyman") 
+andersen.arthur = find.company("andersen") 
+tata = find.company("tata") 
+bearingpoint = find.company("bearingpoint") 
+associates.zs = find.company("associates zs") 
+
+consulting.data = list(accenture, bain, deloitte, boston.consulting, 
+booz, ey, mckinsey, pwc, capgemini, kpmg, oliver.wyman, andersen.arthur, 
+tata, bearingpoint, associates.zs)
+
+find.employee = function(x) { 
+  return(data.frame(x$linkedin_url, x$company, x$end - x$start))
+}
+
+vector = 1:15
+for(company in consulting.data) { 
+  vector[company] = find.employee(consulting.data[[company]])
+}
+  
