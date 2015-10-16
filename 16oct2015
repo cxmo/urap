@@ -1,0 +1,11 @@
+title.tokens.tb = table(my.emp.df$title.tokens.recode)
+consult = grep("consult", my.emp.df$title.tokens)
+consult.df = my.emp.df[consult,]
+
+# cleaning up companies 
+company = consult.df$company.tokens 
+company.tb = table(company)[order(table(company), decreasing = T)]
+
+# accenture, bain, deloitte, boston consulting, allen booz hamilton, 
+# earnst young, mckinsey, pwc, capgemini, kpmg, oliver wyman, anderson arthur 
+# consultancy services tata, bearingpoint, associates zs
