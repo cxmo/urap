@@ -54,8 +54,10 @@ subset.table = function(dataset, titles) {
 
 top.titles = lapply(info.list.new, find.table)
 titles.split = lapply(info.list.new, function(x) 
-                      {x.dataframe = split(x, x$title.tokens); 
-                       empty_vector = 1:length(x.dataframe) 
+                      {x.dataframe = split(x, x$title.tokens);
+                       empty_vector = 1:length(x.dataframe); 
                        for(i in 1:length(x.dataframe)){  
                           current_dataframe = x.dataframe[[i]] 
-                          empty_vector[i] = mean(current_dataframe$x..
+                          empty_vector[i] = mean(current_dataframe$x.end...x.start)
+                       }
+                       return(data.frame(names(x.dataframe), empty_vector))})
