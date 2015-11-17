@@ -42,4 +42,20 @@ find.employee = function(x) {
 info.list = lapply(consulting.data, find.employee)
 info.list.new = info.list 
 
-### 
+### average number of years in position ### 
+# functions 
+find.table = function(dataset) { 
+  title.tokens = dataset$title.tokens
+  return(table(title.tokens)[order(table(title.tokens), decreasing = T)])
+}
+
+subset.table = function(dataset, titles) { 
+  return(split(dataset, 
+
+top.titles = lapply(info.list.new, find.table)
+titles.split = lapply(info.list.new, function(x) 
+                      {x.dataframe = split(x, x$title.tokens); 
+                       empty_vector = 1:length(x.dataframe) 
+                       for(i in 1:length(x.dataframe)){  
+                          current_dataframe = x.dataframe[[i]] 
+                          empty_vector[i] = mean(current_dataframe$x..
