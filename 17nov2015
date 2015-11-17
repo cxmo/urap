@@ -49,9 +49,6 @@ find.table = function(dataset) {
   return(table(title.tokens)[order(table(title.tokens), decreasing = T)])
 }
 
-subset.table = function(dataset, titles) { 
-  return(split(dataset, 
-
 top.titles = lapply(info.list.new, find.table)
 titles.split = lapply(info.list.new, function(x) 
                       {x.dataframe = split(x, x$title.tokens);
