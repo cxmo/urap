@@ -20,9 +20,9 @@ bain = find.company("bain")
 deloitte = find.company("deloitte") 
 boston.consulting = find.company("boston.consulting") 
 booz = find.company("booz") 
-ey = find.company("earnst young | ey") 
+ey = find.company("ernst young | ey") 
 mckinsey = find.company("mckinsey") 
-pwc = find.company("pwc | price") 
+pwc = find.company("pwc | pricewaterhousecoopers") 
 capgemini = find.company("capgemini") 
 kpmg = find.company("kpmg")
 oliver.wyman = find.company("wyman") 
@@ -58,3 +58,6 @@ titles.split = lapply(info.list.new, function(x)
                           empty_vector[i] = mean(current_dataframe$x.end...x.start)
                        }
                        return(data.frame(names(x.dataframe), empty_vector))})
+                       
+# get rid of companies with entries <= 5 
+# look for index 
