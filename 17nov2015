@@ -61,3 +61,11 @@ titles.split = lapply(info.list.new, function(x)
                        
 # get rid of companies with entries <= 5 
 # look for index 
+pwc.tokens = table(pwc$company.tokens) 
+pwc.tokens = powc.tokens[order(pwc.tokens, decreasing = T)] 
+pwc.names <- names(pwc.tokens) 
+length(grep("water", pwc.names)) 
+
+# remove less than 5% of the tail 
+# save into a different list 
+# 
