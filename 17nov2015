@@ -11,7 +11,7 @@ company.tb = table(company)[order(table(company), decreasing = T)]
 
 find.company = function(company.string, data = company){ 
   company.name = grep(company.string, data) 
-  company.name.df = consult.df[company.name,]
+  company.name.df = my.emp.df[company.name,]
   return(company.name.df)
 } 
 
