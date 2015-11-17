@@ -68,4 +68,13 @@ length(grep("water", pwc.names))
 
 # remove less than 5% of the tail 
 # save into a different list 
-# 
+# after saving to different list, keep purging 
+
+# look at aggregate function so we don't have to look at titles.split 
+# nohup R CMD BATCH 
+tail(which(pwc.titles == 10)) 
+pwc.mt10 = subset(pwc, title.tokens %in% names(pwc.titles)[1:107])
+colnames(pwc.mt10) 
+pwc.mt10$duration = pwc.mt10$end - pwc.mt10$start + 1 
+test = aggregate(pwc.mt10$duration, list(pwc.mt10$title.tokens), function(x) mean(x, na.rm = T))
+
