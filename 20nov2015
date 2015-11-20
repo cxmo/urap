@@ -1,0 +1,77 @@
+load("my.emp.df.RData")
+# changes to previous approach 
+# section by companies first 
+
+# cleaning up companies 
+company = my.emp.df$company.tokens 
+# company.tb = table(company)[order(table(company), decreasing = T)]
+
+# accenture, bain, deloitte, boston consulting, allen booz hamilton, 
+# earnst young, mckinsey, pwc, capgemini, kpmg, oliver wyman, anderson arthur 
+# consultancy services tata, bearingpoint, associates zs
+
+find.company = function(company.string, data = company){ 
+  company.name = grep(company.string, data) 
+  company.name.df = my.emp.df[company.name,]
+  return(company.name.df)
+} 
+
+accenture = find.company("accenture") 
+bain = find.company("bain") 
+deloitte = find.company("deloitte") 
+boston.consulting = find.company("boston.consulting") 
+booz = find.company("booz") 
+ey = find.company("ernst young|ey") 
+mckinsey = find.company("mckinsey") 
+pwc = find.company("pwc|pricewater") 
+capgemini = find.company("capgemini") 
+kpmg = find.company("kpmg")
+oliver.wyman = find.company("wyman") 
+andersen.arthur = find.company("andersen") 
+tata = find.company("tata") 
+bearingpoint = find.company("bearingpoint") 
+associates.zs = find.company("associates zs") 
+
+### cleaning up names ### 
+names.clean <- function(dataset){ 
+  dataset.tokens <- table(dataset$company.tokens) 
+  dataset.tokens <- dataset.tokens[order(dataset.tokens, decreasing = T)] 
+  dataset.names <- names(dataset.tokens) 
+  index = tail(which(dataset.tokens == floor(length(dataset.tokens)*0.01)))[1]
+  print(index)
+  dataset = subset(dataset, company.tokens %in% names(dataset.tokens)[1:index-1])
+  return(dataset)
+}
+  
+# accenture 
+accenture.new = names.clean(accenture)
+accenture.new$duration = accenture.new$end - accenture.new$start + 1 
+accenture.mean = aggregate(accenture.new$duration, list(accenture.new$title.tokens), function(x) mean(x, na.rm= T))
+
+
+# PwC
+pwc.tokens = table(pwc$company.tokens) 
+pwc.tokens = pwc.tokens[order(pwc.tokens, decreasing = T)] 
+pwc.names <- names(pwc.tokens) 
+tail(which(pwc.tokens== 10)) 
+pwc.mt10 = subset(pwc, company.tokens %in% names(pwc.tokens)[1:107])
+colnames(pwc.mt10) 
+pwc.mt10$duration = pwc.mt10$end - pwc.mt10$start + 1 
+pwc.mean = aggregate(pwc.mt10$duration, list(pwc.mt10$title.tokens), function(x) mean(x, na.rm = T))
+
+
+consulting.data = list(accenture, bain, deloitte, boston.consulting, 
+booz, ey, mckinsey, pwc, capgemini, kpmg, oliver.wyman, andersen.arthur, 
+tata, bearingpoint, associates.zs)
+
+find.employee = function(x) { 
+  return(data.frame(x, x$end - x$start))
+}
+
+info.list = lapply(consulting.data, find.employee)
+
+
+
+
+# look at aggregate function so we don't have to look at titles.split 
+# nohup R CMD BATCH 
