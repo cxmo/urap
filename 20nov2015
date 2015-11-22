@@ -17,60 +17,59 @@ find.company = function(company.string, data = company){
 } 
 
 accenture = find.company("accenture") 
-bain = find.company("bain") 
+bain = find.company("\\bbain\\b") 
 deloitte = find.company("deloitte") 
 boston.consulting = find.company("boston.consulting") 
-booz = find.company("booz") 
-ey = find.company("ernst young|ey") 
+booz = find.company("\\bbooz\\b") 
+ey = find.company("ernst young|\\bey\\b") 
 mckinsey = find.company("mckinsey") 
 pwc = find.company("pwc|pricewater") 
-capgemini = find.company("capgemini") 
+capgemini = find.company("\\bcapgemini\\b") 
 kpmg = find.company("kpmg")
-oliver.wyman = find.company("wyman") 
-andersen.arthur = find.company("andersen") 
-tata = find.company("tata") 
+oliver.wyman = find.company("\\bwyman\\b") 
+andersen.arthur = find.company("\\bandersen\\b") 
+tata = find.company("\\btata") 
 bearingpoint = find.company("bearingpoint") 
 associates.zs = find.company("associates zs") 
 
-### cleaning up names ### 
+### functions ###
+# cleaning up names 
 names.clean <- function(dataset){ 
   dataset.tokens <- table(dataset$company.tokens) 
   dataset.tokens <- dataset.tokens[order(dataset.tokens, decreasing = T)] 
-  dataset.names <- names(dataset.tokens) 
-  index = tail(which(dataset.tokens == floor(length(dataset.tokens)*0.01)))[1]
-  print(index)
-  dataset = subset(dataset, company.tokens %in% names(dataset.tokens)[1:index-1])
-  return(dataset)
+  dataset.names <- names(dataset.tokens)
+  cutoff = floor(length(dataset.tokens)*0.02) 
+  print(cutoff)
+  if(cutoff > 0) {
+    index = which(dataset.tokens == cutoff)[1]
+    if(is.na(index)){ 
+      index = 20
+    }
+    print(index)
+    dataset = subset(dataset, company.tokens %in% names(dataset.tokens)[1:index-1])
+    return(dataset)
+  } else { 
+    dataset = subset(dataset, company.tokens %in% names(dataset.tokens)[1:(length(dataset$company.tokens)*0.1)])
+    return(dataset)
+  }
 }
-  
-# accenture 
-accenture.new = names.clean(accenture)
-accenture.new$duration = accenture.new$end - accenture.new$start + 1 
-accenture.mean = aggregate(accenture.new$duration, list(accenture.new$title.tokens), function(x) mean(x, na.rm= T))
 
-
-# PwC
-pwc.tokens = table(pwc$company.tokens) 
-pwc.tokens = pwc.tokens[order(pwc.tokens, decreasing = T)] 
-pwc.names <- names(pwc.tokens) 
-tail(which(pwc.tokens== 10)) 
-pwc.mt10 = subset(pwc, company.tokens %in% names(pwc.tokens)[1:107])
-colnames(pwc.mt10) 
-pwc.mt10$duration = pwc.mt10$end - pwc.mt10$start + 1 
-pwc.mean = aggregate(pwc.mt10$duration, list(pwc.mt10$title.tokens), function(x) mean(x, na.rm = T))
-
+# computing mean for reach position
+title.mean = function(dataset){
+  dataset$duration = dataset$end - dataset$start + 1
+  dataset.mean = aggregate(dataset$duration, list(dataset$title.tokens), function(x) { mean(x, na.rm = T)})
+  colnames(dataset.mean) = c("title", "duration") 
+  return(dataset.mean)
+}
 
 consulting.data = list(accenture, bain, deloitte, boston.consulting, 
 booz, ey, mckinsey, pwc, capgemini, kpmg, oliver.wyman, andersen.arthur, 
 tata, bearingpoint, associates.zs)
 
-find.employee = function(x) { 
-  return(data.frame(x, x$end - x$start))
-}
+consulting.data = lapply(consulting.data, names.clean)
+consulting.data.mean = lapply(consulting.data, title.mean) 
 
-info.list = lapply(consulting.data, find.employee)
-
-
+# table(consulting.data.new[[1]]$company.tokens)
 
 
 # look at aggregate function so we don't have to look at titles.split 
