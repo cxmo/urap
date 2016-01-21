@@ -1,0 +1,20 @@
+
+load("2015-12-22.uni.df.final.RData")
+panel = read.csv("panel.ipeds.csv")
+unique(uni.df.final$institution.recode)
+load("us.edu.dict.RData")
+us.edu.dict = edu.dict.id.recode
+names(us.edu.dict)
+# "unitid"   "institution.name"   "institution.recode"
+head(names(panel))
+
+# finding missing data 
+which(!(us.edu.dict$unitid %in% panel$unitid) == T)
+
+# find unitid of missing data 
+ panel[c(50, 67, 79),]$unitid
+[1] 100858 104151 104179
+
+#	Arizona State University-Tempe	Tempe	AZ
+# Auburn University	Auburn University	AL
+#	University of Arizona
