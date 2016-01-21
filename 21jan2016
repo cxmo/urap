@@ -12,8 +12,11 @@ head(names(panel))
 which(!(us.edu.dict$unitid %in% panel$unitid) == T)
 
 # find unitid of missing data 
- panel[c(50, 67, 79),]$unitid
+us.edu.dict[c(50, 67, 79),]$unitid
 [1] 100858 104151 104179
+
+# institution names 
+us.edu.dict[c(50, 67, 79),]$institution.name
 
 #	Arizona State University-Tempe	Tempe	
 # Auburn University
