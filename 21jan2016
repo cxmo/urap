@@ -15,6 +15,6 @@ which(!(us.edu.dict$unitid %in% panel$unitid) == T)
  panel[c(50, 67, 79),]$unitid
 [1] 100858 104151 104179
 
-#	Arizona State University-Tempe	Tempe	AZ
-# Auburn University	Auburn University	AL
+#	Arizona State University-Tempe	Tempe	
+# Auburn University
 #	University of Arizona
