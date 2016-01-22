@@ -13,7 +13,7 @@ which(!(us.edu.dict$unitid %in% panel.ipeds$unitid))
 
 # find unitid of missing data 
 us.edu.dict[c(50, 67, 79),]$unitid
-# [1] 100858 104151 104179
+[1] 145637 166629 186380
 
 # institution names 
 us.edu.dict[c(50, 67, 79),]$institution.name
