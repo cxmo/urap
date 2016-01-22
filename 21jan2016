@@ -9,11 +9,11 @@ names(us.edu.dict)
 head(names(panel))
 
 # finding missing data 
-which(!(us.edu.dict$unitid %in% panel.ipeds$unitid) == T)
+which(!(us.edu.dict$unitid %in% panel.ipeds$unitid))
 
 # find unitid of missing data 
 us.edu.dict[c(50, 67, 79),]$unitid
-[1] 100858 104151 104179
+# [1] 100858 104151 104179
 
 # institution names 
 us.edu.dict[c(50, 67, 79),]$institution.name
