@@ -17,7 +17,3 @@ us.edu.dict[c(50, 67, 79),]$unitid
 
 # institution names 
 us.edu.dict[c(50, 67, 79),]$institution.name
-
-#	Arizona State University-Tempe	Tempe	
-# Auburn University
-#	University of Arizona
