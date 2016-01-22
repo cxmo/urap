@@ -21,3 +21,8 @@ us.edu.dict[c(50, 67, 79),]$institution.name
 [1] "University of Illinois at Urbana-Champaign"
 [2] "University of Massachusetts-Amherst"       
 [3] "Rutgers University-New Brunswick"          
+
+# 1 check original dataset 
+# see if ipeds data is somewhere else 
+# download data individually 
+
