@@ -1,6 +1,6 @@
 
 load("2015-12-22.uni.df.final.RData")
-panel = read.csv("panel.ipeds.csv")
+panel.ipeds = read.csv("panel.ipeds.csv")
 unique(uni.df.final$institution.recode)
 load("us.edu.dict.RData")
 us.edu.dict = edu.dict.id.recode
@@ -17,3 +17,7 @@ us.edu.dict[c(50, 67, 79),]$unitid
 
 # institution names 
 us.edu.dict[c(50, 67, 79),]$institution.name
+
+[1] "University of Illinois at Urbana-Champaign"
+[2] "University of Massachusetts-Amherst"       
+[3] "Rutgers University-New Brunswick"          
