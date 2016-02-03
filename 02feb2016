@@ -1,0 +1,17 @@
+# pulls all text between the delimiters, without indexing 
+import re
+def GetTheSentences(infile):
+     with open(infile) as fp:
+         for result in re.findall('THIS DUMP FOR(.*?)THIS DUMPFOR', fp.read(), re.S):
+             print result
+
+GetTheSentences('output.html') 
+
+# try reading in as text first 
+import urllib 
+page = urllib.urlopen('output.html').read()
+page = page.splitlines() 
+
+# reading using open 
+f = open('output.html', 'r')
+lines = f.readlines() # splits into a list 
