@@ -15,3 +15,9 @@ page = page.splitlines()
 # reading using open 
 f = open('output.html', 'r')
 lines = f.readlines() # splits into a list 
+for line in testlines[1:len(testlines)]: 
+     if "This" in testlines[line]:
+          storelist.append(store)
+          store = "" i
+     else: 
+          store + ' ' + testlines[line] 
