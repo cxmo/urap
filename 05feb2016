@@ -3,7 +3,7 @@ datanew = split(data, data$HITId)
 checklength = lapply(datanew, function(x) length(x$HITId))
 # some pairs of ids do not match 
 # purge ones where ids do not match 
-datanew2 = datanew[-which(checklength != 2)]
+datanew = datanew[-which(checklength != 2)]
 
 # find the agreement rate 
 # function 
