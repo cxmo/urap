@@ -19,4 +19,4 @@ find.agreement    = function(x){
                     return(intersection/union_group)}
 
 datafinal = lapply(datanew2, find.agreement)
-mean(unlist(datafinal)) 
+mean(unlist(datafinal)) # 0.7909931
