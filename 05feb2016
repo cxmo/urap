@@ -1,0 +1,21 @@
+data = read.csv("likewithlike21.csv", stringsAsFactors = F)
+datanew = split(data, data$HITId)
+checklength = lapply(datanew, function(x) length(x$HITId))
+# some pairs of ids do not match 
+# purge ones where ids do not match 
+datanew = datanew[-which(checklength != 2)]
+
+# find the agreement rate 
+# function 
+find.names = function(x) { return(strsplit(x$Answer.selected, '[|]'))} 
+datanew2 = lapply(datanew, find.names) 
+
+# find agreement rate 
+find.agreement    = function(x){ 
+                    group1 = x[[1]]
+                    group2 = x[[2]] 
+                    intersection = length(intersect(group1, group2))
+                    union_group = length(union(group1, group2))
+                    return(intersection/union_group)}
+
+datafinal = lapply(datanew2, find.agreement)
