@@ -1,0 +1,21 @@
+# loading data 
+data.final = load("2015-12-22.uni.df.final.RData")
+panel.ipeds = read.csv("panel.ipeds.csv")
+hd2014 = read.csv("hd2014.csv")
+hd2014.names = tolower(names(data2014))
+which(hd2014.names %in% names(panel.ipeds[1:20]))
+hd2014.names[which(hd2014.names %in% names(panel.ipeds))]
+
+# [1] "unitid"   "city"     "zip"      "sector"   "iclevel"  "control" 
+# [7] "hbcu"     "hospital" "medical"  "landgrnt"
+
+# function for finding matched names 
+find.names = function(x, y) { 
+                            x.lower = tolower(names(x))
+                            indices = which(x.lower %in% names(y))
+                            return(x.lower[indices])
+                            }
+
+ic2014 = read.csv("ic2014.csv") 
+
+
