@@ -1,0 +1,5 @@
+load(load("complink.syn.df.RData")
+inspect.df = data.frame(complink.syn.df$company, complink.syn.df$company.recode)
+inspect.df.sorted = inspect.df[order(inspect.df$company),]
+sum(duplicated(inspect.df.final)) 
+inspect.df.final = subset(inspect.df.sorted, !duplicated(inspect.df.sorted$company))
