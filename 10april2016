@@ -1,0 +1,34 @@
+load("combine.complink.RData")
+setwd("/home/ststaff/cindymo/bulk/Signalfire/peeps")
+load("magellan.emp.df.RData")
+setwd("/home/ststaff/cindymo/working")
+
+### Clean Code (Written by Wei) ###
+cleanup <- function(x) {
+  local.x <- iconv(x, "UTF-8")
+  local.x <- tolower(local.x)
+  local.x <- gsub("[^[:alnum:] ]", " ", local.x) # remove numbers at the beginning
+  local.x <- gsub("  "," ",local.x)
+  local.x <- gsub("  "," ",local.x)
+  local.x <- gsub("  "," ",local.x)
+  local.x <- gsub("^\\s+|\\s+$", "", local.x)
+  return(local.x)
+}
+
+# Reading In Data 
+my.emp.clean = cleanup(my.emp.df$company)
+
+
+length(intersect(
+    my.emp.clean, combine.complink$Synonyms[
+        duplicated(combine.complink$Synonyms)
+    ]
+)) # 120
+
+dupsyn <-combine.complink$Synonyms[duplicated(combine.complink$Synonyms)]
+
+subx <- subset(combine.complink, Synonyms %in% dupsyn)
+subx <- subx[order(subx$Synonyms),]
+comp.count <- table(combine.complink$Company)
+comp.count[subx$Company]
+subx$Count <- as.numeric(comp.count[subx$Company])
