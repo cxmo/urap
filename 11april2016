@@ -1,0 +1,142 @@
+# Script for cleaning combine.complink
+# By Phoebe and Cindy
+
+load("combine.complink.RData")
+setwd("/home/ststaff/cindymo/bulk/Signalfire/peeps")
+load("magellan.emp.df.RData")
+setwd("/home/ststaff/cindymo/working")
+setwd("/home/ststaff/cindymo/working")
+load("empmeta.raw.RData")
+
+
+### Clean Code (Written by Wei) ###
+cleanup <- function(x) {
+  local.x <- iconv(x, "UTF-8")
+  local.x <- tolower(local.x)
+  local.x <- gsub("[^[:alnum:] ]", " ", local.x) # remove numbers at the beginning
+  local.x <- gsub("  "," ",local.x)
+  local.x <- gsub("  "," ",local.x)
+  local.x <- gsub("  "," ",local.x)
+  local.x <- gsub("^\\s+|\\s+$", "", local.x)
+  return(local.x)
+}
+
+### WORKING ONLY WITH MAGELLAN DATASET FIRST ###
+# Reading
+my.emp.clean <- cleanup(my.emp.df$company)
+
+# Removing Exact Duplicates
+my.emp.clean <- my.emp.clean[!duplicated(my.emp.clean)]
+
+# Remove combine.complink duplicates
+combine.complink <- combine.complink[!duplicated(combine.complink),]
+
+length(intersect(
+    my.emp.clean, combine.complink$Synonyms[
+        duplicated(combine.complink$Synonyms)
+    ]
+)) # 120
+
+dupsyn <-combine.complink$Synonyms[duplicated(combine.complink$Synonyms)]
+
+subx <- subset(combine.complink, Synonyms %in% dupsyn)
+subx <- subx[order(subx$Synonyms),]
+comp.count <- table(combine.complink$Company)
+comp.count[subx$Company]
+subx$Count <- as.numeric(comp.count[subx$Company])
+
+# remove the lower number of occurrences
+subx.final <- subx[!duplicated(subx$Synonyms),]
+
+# remove NAs
+subx.final <- subx.final[-is.na(subx.final$Synonyms),]
+
+# join to find the companies represented in magellan
+
+# left outer join
+names(subx.final) <- c("company.recode", "company", "count")
+my.emp.df$company <- cleanup(my.emp.df$company)
+my.emp.df.synmerge <- merge(x = my.emp.df, y = subx.final, by = "company", all.x = TRUE)
+companyandcompany.recode <- my.emp.df.synmerge[which(!is.na(my.emp.df.synmerge$company.recode)),c(1,20)]
+
+my.emp.df.comp.index <- which(is.na(my.emp.df.synmerge$company.recode))
+my.emp.df.final <- my.emp.df.synmerge
+my.emp.df.final[my.emp.df.comp.index, 20] <- my.emp.df.synmerge$company[my.emp.df.comp.index]
+
+head(my.emp.df.final[,c(1, 20)], 50)
+head(my.emp.df.synmerge[,c(1, 20)], 50)
+
+# removing stopwords from magellan dataset
+my.emp.clean = cleanup(my.emp.df.final$company.recode)
+my.emp.split = strsplit(my.emp.clean, split = " ")
+my.emp.unlist = unlist(my.emp.split)
+my.emp.table = table(my.emp.unlist)
+my.emp.table = my.emp.table[order(my.emp.table, decreasing = T)]
+list1 = my.emp.table[c(1, 3, 4, 9, 11, 13:14, 17:19)]
+
+### WORKING WITH COMPUSTAT (EMPMETA.RAW) ###
+empmeta.raw$Company.Name <- cleanup(empmeta.raw$Company.Name)
+
+# finding most popular companies in table.empmeta
+
+table.empmeta <- table(empmeta.raw$Company.Name)
+table.empmeta.order <- table.empmeta[order(table.empmeta, decreasing = T)]
+
+# find stopwords
+empmeta.split <- strsplit(empmeta.raw$Company.Name, split = " " )
+empmeta.unlist <- unlist(empmeta.split)
+empmeta.stopwords <- table(empmeta.unlist)
+empmeta.stopwords <- empmeta.stopwords[order(empmeta.stopwords, decreasing = T)]
+
+list2 <- empmeta.stopwords[c(1:5, 8:10, 12)]
+
+### REMOVING STOPWORDS FROM BOTH DATASETS
+combine.list <- names(c(list1, list2))
+combine.list <- paste0("\\b", combine.list)
+combine.list <- paste(combine.list, collapse = "\\b|")
+combine.list <- paste0(combine.list, '\\b')
+combine.list <- paste(combine.list, "|\\bplc\\b", sep = "")
+
+# compustat data
+empmeta.clean.final <- gsub(pattern = combine.list, replacement = "",  empmeta.raw$Company.Name)
+
+empmeta.clean.final <- gsub(pattern = "\\s+$", "", empmeta.clean.final)
+empmeta.clean.final <- cleanup(empmeta.clean.final)
+
+empmeta.clean.final[grep("intl business machines", empmeta.clean.final)] = "ibm"
+empmeta.clean.final[grep("alphabet", empmeta.clean.final)] = "google"
+empmeta.clean.final[grep("cisco systems", empmeta.clean.final)] = "cisco"
+empmeta.clean.final[grep("hewlett packard enterprise", empmeta.clean.final)] = "hewlett packard"
+
+empmeta.raw$company.recode <- empmeta.clean.final
+
+# magellan data
+my.emp.clean.final <- gsub(pattern = combine.list, replacement = "", my.emp.df.final$company.recode)
+my.emp.clean.final <- gsub(pattern = "\\s+$", "", my.emp.clean.final)
+my.emp.clean.final <- cleanup(my.emp.clean.final)
+
+my.emp.df.final$company.recode <- my.emp.clean.final
+
+# final merges!
+
+my.emp.df.final.merge <- merge(x = my.emp.df.final, y = empmeta.clean.final, by = company.recode)
+
+# finding the intersections
+intersect.companies <- intersect(empmeta.raw$company.recode, my.emp.df.final$company.recode)
+length(intersect.companies))
+
+# % of companies represented in compustat, just by company name
+length(intersect.companies)/length(unique(empmeta.raw$company.recode))
+# 0.0352499
+
+# frequency of matches in compustat
+
+# joining
+library(dplyr)
+my.emp.join.df <- left_join(my.emp.df.final, empmeta.raw)
+sum(is.na(my.emp.join.df$company.recode))
+
+
+
+
+
